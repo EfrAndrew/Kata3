@@ -5,6 +5,7 @@ import jm.task.core.jdbc.model.User;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.util.Collections;
 import java.util.List;
 
 import static jm.task.core.jdbc.util.Util.*;
@@ -75,14 +76,15 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     public List<User> getAllUsers() {
         Transaction transaction = null;
+        List<User> users = Collections.emptyList();
         try (Session session = getSession()) {
             transaction = session.beginTransaction();
-            List<User> users = session.createQuery("FROM User", User.class).list();
+            users = session.createQuery("FROM User", User.class).list();
             transaction.commit();
             return users;
         } catch (Exception e) {
             doRollbackTransaction(transaction);
-            return null;
+            return users;
         }
     }
 
